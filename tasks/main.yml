@@ -1,0 +1,47 @@
+- name: "set backup_filename fact"
+  set_fact:
+    backup_filename: "{{ nfs_mount }}/{{ nfs_path }}/he-backup-{{ ansible_date_time.date }}"
+
+- name: "Ensure NFS Backup share is mounted"
+  mount: name={{nfs_mount}} src={{nfs_server}}:/ fstype=nfs state=mounted
+
+- name: "Check if backup already run"
+  stat:
+    path: "{{ backup_filename }}"
+  register: he_backup_done
+
+- name: "Run HE Backup Full"
+  shell: engine-backup --scope=all --mode=backup --file="{{ backup_filename }}" --log=/var/log/he-backup-"{{ ansible_date_time.date }}".log
+  register: he_backup
+  ignore_errors: False
+  when: he_backup_done.stat.path is not defined
+
+- name: "Get Backup status"
+  debug: msg="Backup completed successfully"
+  when: he_backup is defined and 'rc' in he_backup and he_backup.rc == 0
+
+- name: "Notify"
+  telegram:
+    token: "{{ yourbot_token }}"
+    chat_id: "{{ yourbot_chatid }}"
+    msg: "ovirt-engine backup completed successfully"
+
+- name: "Find backups older then {{ retention_days }}"
+  find:
+    paths: "{{ nfs_mount }}/{{ nfs_path }}/"
+    age: "{{ retention_days }}"
+    recurse: yes
+  register: files_to_delete
+
+- name: "HE Backup files to be deleted"
+  debug: var=item.path
+  with_items: "{{ files_to_delete.files }}"
+
+- name: "Delete old HE Backup files"
+  file:
+    path: "{{ item.path }}"
+    state: absent
+  with_items: "{{ files_to_delete.files }}"
+
+- name: "Umount NFS Backup share"
+  mount: name={{ nfs_mount }} src={{ nfs_server }} fstype=nfs state=unmounted
