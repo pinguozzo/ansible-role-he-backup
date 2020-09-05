@@ -1,0 +1,16 @@
+- name: "RHV: HE Backup"
+  hosts: all
+  become: yes
+  gather_facts: false
+  tags: he-backup
+
+  vars_files:
+    - "./vars/engine_vars.yml"
+    - "./vars/nfs.yml"
+    - "./vars/telegram.yml"
+
+  vars:
+    retention_days: 1w
+
+  roles:
+    - he-backup
