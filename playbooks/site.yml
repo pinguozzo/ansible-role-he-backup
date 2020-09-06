@@ -1,7 +1,6 @@
 - name: "RHV: HE Backup"
   hosts: all
   become: yes
-  gather_facts: false
   tags: he-backup
 
   vars:
