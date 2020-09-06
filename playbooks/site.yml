@@ -5,9 +5,9 @@
   tags: he-backup
 
   vars_files:
-    - ./roles/vars/engine_vars.yml
-    - ./roles/vars/nfs.yml
-    - ./roles/vars/telegram.yml
+    - engine_vars.yml
+    - nfs.yml
+    - telegram.yml
 
   vars:
     retention_days: 1w
