@@ -4,13 +4,8 @@
   gather_facts: false
   tags: he-backup
 
-  vars_files:
-    - engine_vars.yml
-    - nfs.yml
-    - telegram.yml
-
   vars:
     retention_days: 1w
 
   roles:
-    - he-backup
+    - roles/he-backup

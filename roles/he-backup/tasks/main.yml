@@ -1,3 +1,10 @@
+- name: include vars
+  include: "{{ item }}.yml"
+  loop:
+    - engine_vars
+    - telegram
+    - nfs
+
 - name: "set backup_filename fact"
   set_fact:
     backup_filename: "{{ nfs_mount }}/{{ nfs_path }}/he-backup-{{ ansible_date_time.date }}"
