@@ -1,5 +1,5 @@
 - name: include vars
-  include: "{{ item }}.yml"
+  include_vars: "{{ item }}.yml"
   loop:
     - engine_vars
     - telegram
