@@ -32,6 +32,7 @@
     token: "{{ pinguobot_token }}"
     chat_id: "{{ pinguobot_chatid }}"
     msg: "ovirt-engine backup completed successfully"
+  when: he_backup is defined and 'rc' in he_backup and he_backup.rc == 0
 
 - name: "find backups older then {{ retention_days }}"
   find:
