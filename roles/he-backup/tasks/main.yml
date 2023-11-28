@@ -10,7 +10,7 @@
     backup_filename: "{{ nfs_mount }}/{{ nfs_path }}/he-backup-{{ ansible_date_time.date }}"
 
 - name: "ensure NFS Backup share is mounted"
-  mount: name={{nfs_mount}} src={{nfs_server}}:/ fstype=nfs state=mounted
+  mount: name={{nfs_mount}} src={{nfs_server}}:/{{ nfs_export }} fstype=nfs state=mounted
 
 - name: "check if backup already run"
   stat:
@@ -52,4 +52,4 @@
   with_items: "{{ files_to_delete.files }}"
 
 - name: "umount nfs Backup share"
-  mount: name={{ nfs_mount }} src={{ nfs_server }} fstype=nfs state=unmounted
+  mount: name={{ nfs_mount }} src={{nfs_server}}:/{{ nfs_export }} fstype=nfs state=unmounted
